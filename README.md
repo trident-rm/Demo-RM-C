@@ -95,7 +95,10 @@ cmake --build --preset Debug --parallel
 
 ```sh
 clangd --check=Core/Src/main.c "--query-driver=**/arm-none-eabi-gcc*"
+clangd --check=Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h "--query-driver=**/arm-none-eabi-gcc*"
 ```
+
+单独打开 HAL 模块头文件或 `stm32f4xx_hal_conf.h` 时，`USE_HAL_DRIVER` 会使 `stm32f4xx.h` 提前递归包含 HAL，可能在 `HAL_StatusTypeDef` 定义前使用该类型。`.clangd` 仅在独立解析这些头文件时移除该宏，避免这类包含顺序诊断；解析 `.c` 文件和实际构建仍使用完整的工程宏定义。
 
 如需按 Release 配置索引，先运行 `cmake --preset Release`，再将 `.clangd` 的 `CompilationDatabase` 改为 `build/Release`。更换编译环境后重新生成编译数据库，并重启编辑器中的 clangd。
 

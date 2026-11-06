@@ -1,2 +1,12 @@
 CompileFlags:
   CompilationDatabase: build/Debug
+
+---
+If:
+  PathMatch:
+    - Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_.*\.h
+    - Core/Inc/stm32f4xx_hal_conf\.h
+CompileFlags:
+  # Standalone HAL headers otherwise recurse through stm32f4xx.h before
+  # HAL_StatusTypeDef is declared. Source files keep their original flags.
+  Remove: [-DUSE_HAL_DRIVER]
