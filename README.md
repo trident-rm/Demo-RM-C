@@ -2,6 +2,8 @@
 
 基于 STM32F407IGH6 的 C11 固件教学入门工程，使用 STM32CubeMX、ARM GNU Toolchain 和 CMake/Ninja 构建，通过 OpenOCD 烧录。
 
+烧录并复位后，板载 RGB 灯每隔 500 ms 同步切换亮灭；按住 KEY 常亮，松开后恢复闪烁。
+
 ## 环境要求
 
 Windows、Linux 和 macOS 均使用下列工具，并将其可执行文件所在目录加入 `PATH`：

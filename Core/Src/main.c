@@ -87,7 +87,8 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  const uint16_t led_pins = LED_R_Pin | LED_G_Pin | LED_B_Pin;
+  uint32_t last_blink_tick = HAL_GetTick();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -97,6 +98,20 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    const uint32_t now = HAL_GetTick();
+
+    if (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET)
+    {
+      HAL_GPIO_WritePin(LED_R_GPIO_Port, led_pins, GPIO_PIN_SET);
+      last_blink_tick = now;
+    }
+    else if (now - last_blink_tick >= 500U)
+    {
+      HAL_GPIO_TogglePin(LED_R_GPIO_Port, led_pins);
+      last_blink_tick = now;
+    }
+
+    HAL_Delay(1);
   }
   /* USER CODE END 3 */
 }
