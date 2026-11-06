@@ -1,6 +1,6 @@
 # Demo-RM-C
 
-基于 STM32F407 的 C11 固件工程，使用 STM32CubeMX、ARM GNU Toolchain 和 CMake/Ninja 构建。
+基于 STM32F407IGH6 的 C11 固件教学入门工程，使用 STM32CubeMX、ARM GNU Toolchain 和 CMake/Ninja 构建，通过 OpenOCD 烧录。
 
 ## 环境要求
 
@@ -9,6 +9,7 @@ Windows、Linux 和 macOS 均使用下列工具，并将其可执行文件所在
 - CMake ≥ 3.22。
 - Ninja。
 - ARM GNU Toolchain：`arm-none-eabi-gcc`、`arm-none-eabi-g++` 等交叉编译工具，需包含目标平台的 C/C++ 标准库。
+- OpenOCD：烧录时需要，下述配置以 OpenOCD 0.12.0 为基准。
 - clangd：可选，用于编辑器补全、诊断和跳转。
 
 可使用 STM32CubeCLT 提供的 ARM GNU Toolchain。以下命令均在项目根目录执行，适用于 PowerShell、Bash 和 Zsh。
@@ -43,7 +44,31 @@ cmake --build --preset Release --parallel
 | `Debug` | `build/Debug` | `-O0 -g3` | `Demo-RM-C.elf`、`Demo-RM-C.map` |
 | `Release` | `build/Release` | `-Os -g0` | `Demo-RM-C.elf`、`Demo-RM-C.map` |
 
-产物位于各自的构建目录中。当前 CMake 配置生成 ELF 和链接映射文件；烧录通过外部工具完成。
+产物位于各自的构建目录中。ELF 文件用于烧录，链接映射文件（`.map`）用于查看程序的内存布局。
+
+## OpenOCD 烧录
+
+构建成功后，在项目根目录按实际下载器选择一条命令执行。
+
+```sh
+# Debug — CMSIS-DAP（默认）
+openocd -f openocd/cmsis-dap.cfg -c "program {build/Debug/Demo-RM-C.elf} verify reset exit"
+
+# Debug — ST-Link
+openocd -f openocd/stlink.cfg -c "program {build/Debug/Demo-RM-C.elf} verify reset exit"
+
+# Debug — J-Link
+openocd -f openocd/jlink.cfg -c "program {build/Debug/Demo-RM-C.elf} verify reset exit"
+
+# Release — CMSIS-DAP（默认）
+openocd -f openocd/cmsis-dap.cfg -c "program {build/Release/Demo-RM-C.elf} verify reset exit"
+
+# Release — ST-Link
+openocd -f openocd/stlink.cfg -c "program {build/Release/Demo-RM-C.elf} verify reset exit"
+
+# Release — J-Link
+openocd -f openocd/jlink.cfg -c "program {build/Release/Demo-RM-C.elf} verify reset exit"
+```
 
 ## 常用 CMake 命令
 
