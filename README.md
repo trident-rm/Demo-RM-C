@@ -22,7 +22,9 @@ ninja --version
 arm-none-eabi-gcc --version
 ```
 
-## 配置与编译
+## 基础
+
+### 配置与编译
 
 项目已在 `CMakePresets.json` 中配置 Ninja 生成器、交叉编译工具链和构建目录。
 
@@ -48,7 +50,7 @@ cmake --build --preset Release --parallel
 
 产物位于各自的构建目录中。ELF 文件用于烧录，链接映射文件（`.map`）用于查看程序的内存布局。
 
-## OpenOCD 烧录
+### OpenOCD 烧录
 
 构建成功后，在项目根目录按实际下载器选择一条命令执行。
 
@@ -72,7 +74,15 @@ openocd -f openocd/stlink.cfg -c "program {build/Release/Demo-RM-C.elf} verify r
 openocd -f openocd/jlink.cfg -c "program {build/Release/Demo-RM-C.elf} verify reset exit"
 ```
 
-## 常用 CMake 命令
+### 调试（基于 Cortex-Debug）
+
+调试基于 VS Code 的 [Cortex-Debug 扩展](https://marketplace.visualstudio.com/items?itemName=marus25.cortex-debug)。
+
+在 VS Code 中按 F5 启动调试。Cortex-Debug 会读取 `.vscode/launch.json` 中的配置，使用 OpenOCD 启动调试。
+
+## 高级
+
+### 常用 CMake 命令
 
 以下以 Debug 为例；需要操作 Release 时，将预设名或目录中的 `Debug` 替换为 `Release`。这些命令要求对应目录已完成配置。
 
@@ -108,7 +118,7 @@ cmake --build --preset Debug --parallel
 
 更换编译器或工具链安装位置后，应使用新的构建目录，或清除旧配置后重新配置。
 
-## clangd
+### clangd
 
 项目已启用 `CMAKE_EXPORT_COMPILE_COMMANDS`。运行 `cmake --preset Debug` 后，会生成 `build/Debug/compile_commands.json`；根目录的 `.clangd` 默认读取该文件，复用工程的头文件路径、宏定义和 ARM 编译参数。
 
